@@ -11,15 +11,20 @@ class NearEarthObjects
       url: 'https://api.nasa.gov',
       params: { start_date: date, api_key: ENV['nasa_api_key']}
     )
+    #this can be its own method to get the data
     asteroids_list_data = conn.get('/neo/rest/v1/feed')
 
+    #this can be its own method
     parsed_asteroids_data = JSON.parse(asteroids_list_data.body, symbolize_names: true)[:near_earth_objects][:"#{date}"]
-
+    
+    #this can be its own method
     largest_astroid_diameter = parsed_asteroids_data.map do |astroid|
       astroid[:estimated_diameter][:feet][:estimated_diameter_max].to_i
     end.max { |a,b| a<=> b}
 
+    #this can be its own method
     total_number_of_astroids = parsed_asteroids_data.count
+    #this can be its own method
     formatted_asteroid_data = parsed_asteroids_data.map do |astroid|
       {
         name: astroid[:name],
@@ -27,7 +32,7 @@ class NearEarthObjects
         miss_distance: "#{astroid[:close_approach_data][0][:miss_distance][:miles].to_i} miles"
       }
     end
-
+    #this can be its own method
     {
       astroid_list: formatted_asteroid_data,
       biggest_astroid: largest_astroid_diameter,
